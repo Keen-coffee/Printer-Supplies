@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Printer{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Edit Printer</h2>
+  <form method="POST" action="{{ url_for('edit_printer', printer_id=printer.id) }}">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ printer.name }}" required>
+    </div>
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input type="text" class="form-control" id="location" name="location" value="{{ printer.location }}" required>
+    </div>
+    <div class="form-group">
+      <label for="ip_address">IP Address</label>
+      <input type="text" class="form-control" id="ip_address" name="ip_address" value="{{ printer.ip_address }}" required>
+    </div>
+    <div class="form-group">
+      <label for="type">Type</label>
+      <select class="form-control" id="type" name="type" required>
+        <option value="b/w" {% if printer.type == 'b/w' %}selected{% endif %}>B/W</option>
+        <option value="color" {% if printer.type == 'color' %}selected{% endif %}>Color</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="toner_family">Toner Family</label>
+      <select class="form-control" id="toner_family" name="toner_family">
+        <option value="">-- Select Toner Family --</option>
+        {% for family in toner_families %}
+        <option value="{{ family }}" {% if printer.toner_family == family %}selected{% endif %}>{{ family }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <hr>
+    <h4>OID Settings</h4>
+    <div class="form-group">
+      <label for="page_count_oid">Page Count OID</label>
+      <input type="text" class="form-control" id="page_count_oid" name="page_count_oid" value="{{ printer.page_count_oid or '1.3.6.1.2.1.43.10.2.1.4.1.1' }}">
+    </div>
+    <!-- Fields for B/W printers -->
+    <div id="bw-fields" style="display:none;">
+      <div class="form-group">
+        <label for="bw_k_oid">K OID</label>
+        <input type="text" class="form-control" id="bw_k_oid" name="bw_k_oid" value="{{ printer.k_oid or '1.3.6.1.2.1.43.11.1.1.9.1.1' }}">
+      </div>
+    </div>
+    <!-- Fields for Color printers -->
+    <div id="color-fields" style="display:none;">
+      <div class="form-group">
+        <label for="c_oid">C OID</label>
+        <input type="text" class="form-control" id="c_oid" name="c_oid" value="{{ printer.c_oid or '1.3.6.1.2.1.43.11.1.1.9.1.2' }}">
+      </div>
+      <div class="form-group">
+        <label for="m_oid">M OID</label>
+        <input type="text" class="form-control" id="m_oid" name="m_oid" value="{{ printer.m_oid or '1.3.6.1.2.1.43.11.1.1.9.1.3' }}">
+      </div>
+      <div class="form-group">
+        <label for="y_oid">Y OID</label>
+        <input type="text" class="form-control" id="y_oid" name="y_oid" value="{{ printer.y_oid or '1.3.6.1.2.1.43.11.1.1.9.1.4' }}">
+      </div>
+      <div class="form-group">
+        <label for="color_k_oid">K OID</label>
+        <input type="text" class="form-control" id="color_k_oid" name="color_k_oid" value="{{ printer.k_oid or '1.3.6.1.2.1.43.11.1.1.9.1.1' }}">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Printer</button>
+    <a href="{{ url_for('printers_setup') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+<script>
+  function toggleOidFields() {
+    let type = document.getElementById('type').value;
+    if (type === 'b/w') {
+      document.getElementById('bw-fields').style.display = 'block';
+      document.getElementById('color-fields').style.display = 'none';
+    } else if (type === 'color') {
+      document.getElementById('color-fields').style.display = 'block';
+      document.getElementById('bw-fields').style.display = 'none';
+    } else {
+      document.getElementById('bw-fields').style.display = 'none';
+      document.getElementById('color-fields').style.display = 'none';
+    }
+  }
+  document.getElementById('type').addEventListener('change', toggleOidFields);
+  // Initialize on page load
+  toggleOidFields();
+</script>
+{% endblock %}

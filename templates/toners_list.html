@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Toners List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Family</th>
+        <th>Type</th>
+        <th colspan="4">Inventories</th>
+      </tr>
+      <tr>
+        <th colspan="2"></th>
+        <!-- Reordered header: K first, then C, Y, M -->
+        <th>K</th>
+        <th>C</th>
+        <th>Y</th>
+        <th>M</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for toner in toners %}
+      <tr>
+        <td>{{ toner.family }}</td>
+        <td>{{ toner.color }}</td>
+        {% if toner.color == 'b/w' %}
+          <td colspan="4">
+            <form action="{{ url_for('increase_black', toner_id=toner.id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-success">+</button>
+            </form>
+            {{ toner.black_inventory }}
+            <form action="{{ url_for('decrease_black', toner_id=toner.id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-warning">-</button>
+            </form>
+          </td>
+        {% else %}
+          <!-- For color toners, display K then C, Y, M -->
+          <td>
+            <form action="{{ url_for('increase_color', toner_id=toner.id, color='k') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-success">+</button>
+            </form>
+            {{ toner.k_inventory }}
+            <form action="{{ url_for('decrease_color', toner_id=toner.id, color='k') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-warning">-</button>
+            </form>
+          </td>
+          <td>
+            <form action="{{ url_for('increase_color', toner_id=toner.id, color='c') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-success">+</button>
+            </form>
+            {{ toner.c_inventory }}
+            <form action="{{ url_for('decrease_color', toner_id=toner.id, color='c') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-warning">-</button>
+            </form>
+          </td>
+          <td>
+            <form action="{{ url_for('increase_color', toner_id=toner.id, color='y') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-success">+</button>
+            </form>
+            {{ toner.y_inventory }}
+            <form action="{{ url_for('decrease_color', toner_id=toner.id, color='y') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-warning">-</button>
+            </form>
+          </td>
+          <td>
+            <form action="{{ url_for('increase_color', toner_id=toner.id, color='m') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-success">+</button>
+            </form>
+            {{ toner.m_inventory }}
+            <form action="{{ url_for('decrease_color', toner_id=toner.id, color='m') }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-warning">-</button>
+            </form>
+          </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" class="text-center">No toners available.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

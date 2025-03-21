@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Printers Setup{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Add Printer</h2>
+  <form method="POST" action="{{ url_for('printers_setup') }}">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Enter printer name" required>
+    </div>
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
+    </div>
+    <div class="form-group">
+      <label for="ip_address">IP Address</label>
+      <input type="text" class="form-control" id="ip_address" name="ip_address" placeholder="Enter IP address" required>
+    </div>
+    <div class="form-group">
+      <label for="type">Type</label>
+      <select class="form-control" id="type" name="type" required>
+        <option value="b/w">B/W</option>
+        <option value="color">Color</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="toner_family">Toner Family</label>
+      <select class="form-control" id="toner_family" name="toner_family">
+        <option value="">-- Select Toner Family --</option>
+        {% for family in toner_families %}
+        <option value="{{ family }}">{{ family }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <hr>
+    <h4>OID Settings</h4>
+    <div class="form-group">
+      <label for="page_count_oid">Page Count OID</label>
+      <input type="text" class="form-control" id="page_count_oid" name="page_count_oid" value="1.3.6.1.2.1.43.10.2.1.4.1.1">
+    </div>
+    <!-- Fields for B/W printers -->
+    <div id="bw-fields" style="display:none;">
+      <div class="form-group">
+        <label for="bw_k_oid">K OID</label>
+        <input type="text" class="form-control" id="bw_k_oid" name="bw_k_oid" value="1.3.6.1.2.1.43.11.1.1.9.1.1">
+      </div>
+    </div>
+    <!-- Fields for Color printers -->
+    <div id="color-fields" style="display:none;">
+      <div class="form-group">
+        <label for="c_oid">C OID</label>
+        <input type="text" class="form-control" id="c_oid" name="c_oid" value="1.3.6.1.2.1.43.11.1.1.9.1.2">
+      </div>
+      <div class="form-group">
+        <label for="m_oid">M OID</label>
+        <input type="text" class="form-control" id="m_oid" name="m_oid" value="1.3.6.1.2.1.43.11.1.1.9.1.3">
+      </div>
+      <div class="form-group">
+        <label for="y_oid">Y OID</label>
+        <input type="text" class="form-control" id="y_oid" name="y_oid" value="1.3.6.1.2.1.43.11.1.1.9.1.4">
+      </div>
+      <div class="form-group">
+        <label for="color_k_oid">K OID</label>
+        <input type="text" class="form-control" id="color_k_oid" name="color_k_oid" value="1.3.6.1.2.1.43.11.1.1.9.1.1">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Printer</button>
+  </form>
+
+  <hr>
+
+  <h2>Existing Printers</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>IP Address</th>
+        <th>Type</th>
+        <th>Toner Family</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for printer in printers %}
+      <tr>
+        <td>{{ printer.name }}</td>
+        <td>{{ printer.location }}</td>
+        <td>{{ printer.ip_address }}</td>
+        <td>{{ printer.type }}</td>
+        <td>{{ printer.toner_family }}</td>
+        <td>
+          <a href="{{ url_for('edit_printer', printer_id=printer.id) }}" class="btn btn-sm btn-secondary">Edit</a>
+          <form action="{{ url_for('delete_printer', printer_id=printer.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this printer?');">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" class="text-center">No printers available.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function toggleOidFields() {
+    let type = document.getElementById('type').value;
+    if (type === 'b/w') {
+      document.getElementById('bw-fields').style.display = 'block';
+      document.getElementById('color-fields').style.display = 'none';
+    } else if (type === 'color') {
+      document.getElementById('color-fields').style.display = 'block';
+      document.getElementById('bw-fields').style.display = 'none';
+    } else {
+      document.getElementById('bw-fields').style.display = 'none';
+      document.getElementById('color-fields').style.display = 'none';
+    }
+  }
+  document.getElementById('type').addEventListener('change', toggleOidFields);
+  // Call on page load
+  toggleOidFields();
+</script>
+{% endblock %}

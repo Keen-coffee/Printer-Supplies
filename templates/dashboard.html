@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Dashboard</h2>
+  
+  <h3>Low Toners</h3>
+  {% if low_toners %}
+    <ul>
+      {% for toner in low_toners %}
+        <li>
+          {{ toner.family }} ({{ toner.color }}) - 
+          {% if toner.color == 'b/w' %}
+            Inventory: {{ toner.black_inventory }} (Minimum: {{ toner.min }})
+          {% else %}
+            C: {{ toner.c_inventory }}, M: {{ toner.m_inventory }}, Y: {{ toner.y_inventory }}, K: {{ toner.k_inventory }}
+            (Minimum: {{ toner.min }})
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No toners below minimum levels.</p>
+  {% endif %}
+
+  <h3>Printers Below 15%</h3>
+  {% if low_printers %}
+    <ul>
+      {% for printer in low_printers %}
+        <li>
+          {{ printer.name }} (Toner Family: {{ printer.toner_family }}) - 
+          {% if printer.type == 'b/w' %}
+            K: {{ printer.k_percentage }}%
+          {% else %}
+            C: {{ printer.c_percentage }}%, M: {{ printer.m_percentage }}%, Y: {{ printer.y_percentage }}%, K: {{ printer.k_percentage }}%
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>All printers have satisfactory toner levels.</p>
+  {% endif %}
+
+  <h3>Recommendations</h3>
+  {% if recommendations %}
+    <ul>
+      {% for rec in recommendations %}
+        <li>{{ rec }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No recommendations at this time.</p>
+  {% endif %}
+</div>
+{% endblock %}

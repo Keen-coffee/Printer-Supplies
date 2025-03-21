@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Toner{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Toner</h2>
+    <form method="POST" action="{{ url_for('edit_toner', toner_id=toner.id) }}">
+        <div class="form-group">
+            <label for="family">Family</label>
+            <input type="text" class="form-control" id="family" name="family" value="{{ toner.family }}" required>
+        </div>
+        <div class="form-group">
+            <label for="color">Color</label>
+            <input type="text" class="form-control" id="color" name="color" value="{{ toner.color }}" required>
+        </div>
+        <div class="form-group">
+            <label for="min">Min</label>
+            <input type="number" class="form-control" id="min" name="min" value="{{ toner.min }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Toner</button>
+        <a href="{{ url_for('toners_setup') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
